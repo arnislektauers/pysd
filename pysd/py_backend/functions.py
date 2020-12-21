@@ -35,6 +35,34 @@ try:
         # np.random.seed(seed)  # we could bring this back later, but for now, ignore
         return stats.truncnorm.rvs(minimum, maximum, loc=mean, scale=std)
 
+
+    def poisson(min,max,mean,shift,stretch,stream):
+        """
+        Implements Vensim's Random Poisson function
+
+        RANDOM POISSON(min,max,mean,shift,stretch)
+        Draws a number from a Poisson distribution with the specified mean. 
+        The resulting number is multiplied by stretch and then shift is added.
+
+        POISSON(1,42, 13*Demand coefficient from average , 0, 1, 45 )
+        ~   patients/Day
+        ~   Average 13 patients per day (not taking into account weekends, every day, \
+            365 days)
+        """
+        dist = stats.distributions.poisson(mean)
+
+         # Find the lower CDF value
+        lower_cdf = dist.cdf(min)
+        # The upper CDF 
+        upper_cdf = dist.cdf(max)
+        
+        # Move our random sample into the truncated area of the distribution
+        shrink_factor = upper_cdf - lower_cdf
+        sample = np.random.rand() * shrink_factor + lower_cdf
+        
+        # and find the value of the poisson distribution at those sampled points.
+        return dist.ppf(sample) * stretch + shift
+
 except ImportError:
     warnings.warn("Scipy required for functions:"
                   "- Bounded Normal (falling back to unbounded normal)")
@@ -42,6 +70,10 @@ except ImportError:
     def bounded_normal(minimum, maximum, mean, std, seed):
         """ Warning: using unbounded normal due to no scipy """
         return np.random.normal(mean, std)
+
+
+    def poisson(min,max,mean,shift,stretch,stream):
+        return np.random.poisson(mean) * stretch + shift
 
 small_vensim = 1e-6  # What is considered zero according to Vensim Help
 

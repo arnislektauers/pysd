@@ -411,6 +411,7 @@ functions = {
     "random normal":
         "functions.bounded_normal",
     "poisson": "np.random.poisson",
+    "random poisson": "functions.poisson",
     "ln": "np.log",
     "log": "functions.log",
     "exprnd": "np.random.exponential",
