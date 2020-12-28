@@ -565,6 +565,16 @@ builders = {
         subscript_dict=subscript_dict
     ),
 
+    "delay information": lambda element, subscript_dict, args: builder.add_n_delay(
+        identifier=element['py_name'],
+        delay_input=args[0],
+        delay_time=args[1],
+        initial_value=args[2],
+        order='1.',
+        subs=element['subs'],
+        subscript_dict=subscript_dict
+    ),
+
     "delay n": lambda element, subscript_dict, args: builder.add_n_delay(
         identifier=element['py_name'],
         delay_input=args[0],
